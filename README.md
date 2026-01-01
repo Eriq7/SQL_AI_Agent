@@ -1,112 +1,95 @@
-# LangChain SQL Agent Demo
-A guide to building a question-answer chatbot with LangChain and PostgreSQL with session memory
+# 🧠 SQL AI Agent — ChatGPT-style Chatbot for Databases
 
-## Prerequisites
+A **ChatGPT-like AI assistant for SQL databases**.  
+Ask natural language questions like:
+> “Which book has the highest rating?”  
+> “Who wrote the best book?”
 
--   Python 3.9+
--   PostgreSQL database
--   OpenAI API key
--   Basic knowledge of SQL and Python
+The system automatically:
+1. Understands your question  
+2. Converts it into SQL  
+3. Queries PostgreSQL  
+4. Returns the answer + raw SQL result  
 
-## Setup
+This mirrors how modern companies build **AI data analysts, BI copilots, and internal knowledge bots**.
 
-First, install the required packages:
+---
 
-```bash
-pip install fastapi uvicorn langchain-openai langchain-community sqlalchemy psycopg2-binary langchain-postgres asyncio
-```
+## 🚀 Overview
+This project demonstrates a full **LLM-powered SQL Agent pipeline**:
+- Natural language → SQL translation
+- Multi-table joins & aggregation
+- Persistent chat memory
+- Production-style REST API
 
-For our example, let's assume we have a simple **bookstore database** with two tables:
+---
 
-```sql
--- Authors table
-CREATE TABLE authors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    birth_year INTEGER,
-    nationality VARCHAR(100)
-);
+## 🧩 Tech Stack
 
--- Books table  
-CREATE TABLE books (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    author_id INTEGER REFERENCES authors(id),
-    genre VARCHAR(100),
-    publication_year INTEGER,
-    rating DECIMAL(3,2)
-);
-```
+| Category | Tools |
+|--------|------|
+| LLM / AI | OpenAI GPT (via LangChain), LangChain SQL Agent |
+| Memory | LangChain Postgres Chat Memory |
+| Backend | FastAPI, Uvicorn |
+| Database | PostgreSQL 16 (Docker) |
+| ORM / Driver | SQLAlchemy, Psycopg |
+| DevOps | Docker, GitHub |
+| Env Mgmt | Python `.venv`, `.env` secrets |
 
--   **Authors**: stores basic author information like name, year of birth, and nationality.
--   **Books**: stores book details such as title, genre, publication year, and rating, with a foreign key linking back to the author.
+---
 
-Once you create these tables and insert some sample data, it helps to also define a **view** called `books_with_authors`. This view joins both tables into one unified dataset so that queries can be simplified. Instead of writing complex SQL joins every time, the agent can query the view directly to get books along with their authors.
+## 🖥 Live Demo (Real AI → SQL → Database)
 
-```sql
-CREATE VIEW books_with_authors AS
-SELECT 
-    b.id AS book_id,
-    b.title,
-    b.genre,
-    b.publication_year,
-    b.rating,
-    a.name AS author_name,
-    a.birth_year,
-    a.nationality
-FROM books b
-JOIN authors a ON b.author_id = a.id;
-```
+### 1️⃣ Highest Rated Book
+![Highest](screenshots/highest rating book.png)
+![Highest Resp](screenshots/highest rating book response.png)
 
-# Running the Application
+### 2️⃣ Average Rating
+![Avg](screenshots/average rating of all book.png)
+![Avg Resp](screenshots/average rating response.png)
 
-## Setup Steps
+### 3️⃣ Most Recent Book
+![Last](screenshots/last book name.png)
+![Last Resp](screenshots/last book name response.png)
 
-1.  **Create your database**
-2.  **Clone the project** with `https://github.com/Silversky-Technology/langchain-sql-agent-guide.git`
-3.  **Configure credentials** - Replace OpenAI API key and your database credentials
-4.  **Set up virtual environment** - In your project folder terminal, run:
-    
-    
-    ```bash
-    python -m venv venv
-    ```
-    
-5.  **Activate virtual environment** (for Mac):
-    
+### 4️⃣ Author of Best Book
+![Author](screenshots/which author wrote the best book.png)
+![Author Resp](screenshots/which author write the highest rating book response.png)
 
-    
-    ```bash
-    source venv/bin/activate
-    ```
-    
-6.  **Install dependencies** in the virtual environment:
-   
-   ```bash
-    pip install fastapi uvicorn langchain-openai langchain-community sqlalchemy psycopg2-binary langchain-postgres asyncio
-   ```
-    
-    
-7.  **Run the application**:
-    
-    
-    ```bash
-    uvicorn main:app --reload
-    ```
-    
+---
 
-## Testing the API
-
-Your API will be available at `http://localhost:8000`. You can test it with:
-
-
+## 🛠 Run Locally
 
 ```bash
-curl -X POST "http://localhost:8000/chat" \
+docker run --name bookstore-db \
+  -e POSTGRES_USER=user \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=bookstore \
+  -p 5433:5432 \
+  -d postgres:16
+```
+
+```bash
+git clone https://github.com/Eriq7/SQL_AI_Agent.git
+cd SQL_AI_Agent
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+echo "OPENAI_API_KEY=your_key_here" > .env
+python -m uvicorn main:app --reload
+```
+
+Open: http://127.0.0.1:8000/docs
+
+---
+
+## 🔎 Example API Call
+
+```bash
+curl -X POST http://127.0.0.1:8000/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "message": "How many authors do we have?",
-    "user_id": "3dc035ae-bc72-4d5a-8569-c87c10aab97f"
+    "message": "Which author wrote the highest rated book?",
+    "user_id": "demo_user"
   }'
 ```
-
