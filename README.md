@@ -41,20 +41,31 @@ This project demonstrates a full **LLM-powered SQL Agent pipeline**:
 ## 🖥 Live Demo (Real AI → SQL → Database)
 
 ### 1️⃣ Highest Rated Book
-![Highest](screenshots/highest rating book.png)
-![Highest Resp](screenshots/highest rating book response.png)
+![Highest Rated Book](screenshots/highest_rating_book.png)
+
+![Highest Rated Book Response](screenshots/highest_rating_book_response.png)
+
+---
 
 ### 2️⃣ Average Rating
-![Avg](screenshots/average rating of all book.png)
-![Avg Resp](screenshots/average rating response.png)
+![Average Rating Question](screenshots/average_rating_of_all_book.png)
+
+![Average Rating Response](screenshots/average_rating_response.png)
+
+---
 
 ### 3️⃣ Most Recent Book
-![Last](screenshots/last book name.png)
-![Last Resp](screenshots/last book name response.png)
+![Last Book Question](screenshots/last_book_name.png)
+
+![Last Book Response](screenshots/last_book_name_response.png)
+
+---
 
 ### 4️⃣ Author of Best Book
-![Author](screenshots/which author wrote the best book.png)
-![Author Resp](screenshots/which author write the highest rating book response.png)
+![Best Author Question](screenshots/which_author_wrote_the_best_book.png)
+
+![Best Author Response](screenshots/which_author_wrote_the_highest_rating_book_response.png)
+
 
 ---
 
